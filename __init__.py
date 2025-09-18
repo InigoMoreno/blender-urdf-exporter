@@ -50,7 +50,7 @@ class URDFExporter(Operator, ExportHelper):
     )
 
     def execute(self, context):
-        import urdf
+        import .urdf as urdf
 
         filepath = pathlib.Path(self.filepath)
         blend_file_path = pathlib.Path(bpy.data.filepath)
