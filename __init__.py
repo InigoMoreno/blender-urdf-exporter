@@ -83,9 +83,12 @@ class URDFExporter(Operator, ExportHelper):
             bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
         robot = urdf.Robot(blend_file_path.stem)
-        robot(urdf.Link(prefix + base_link))
         for obj in bpy.data.objects:
             obj.name = obj.name.lower().replace(' ', '_')
+        # Add a base link if no object is named base_link
+        if 'base_link' not in [obj.name for obj in bpy.data.objects]:
+            robot(urdf.Link(prefix + base_link))
+        for obj in bpy.data.objects:
             link_args = [prefix + obj.name]
             file = str(directory.joinpath(f'{obj.name}.dae'))
             bpy.ops.object.select_all(action='DESELECT')
@@ -112,16 +115,17 @@ class URDFExporter(Operator, ExportHelper):
                 link_args.append(urdf.Collision(urdf.Geometry(urdf.Mesh(filename=collision_file))))
 
             robot(urdf.Link(*link_args))
-            parent = base_link
-            if obj.parent is not None:
-                parent = obj.parent.name
-            robot(urdf.Joint(
-                prefix + obj.name,
-                urdf.Parent(prefix + parent),
-                urdf.Child(prefix + obj.name),
-                urdf.Origin(xyz=list(obj.matrix_local.to_translation()), rpy=list(obj.matrix_local.to_euler())),
-                type='fixed',
-            ))
+            if obj.name != base_link:
+                parent = base_link
+                if obj.parent is not None:
+                    parent = obj.parent.name
+                robot(urdf.Joint(
+                    prefix + obj.name,
+                    urdf.Parent(prefix + parent),
+                    urdf.Child(prefix + obj.name),
+                    urdf.Origin(xyz=list(obj.matrix_local.to_translation()), rpy=list(obj.matrix_local.to_euler())),
+                    type='fixed',
+                ))
 
         urdf_string = str(robot)
 
