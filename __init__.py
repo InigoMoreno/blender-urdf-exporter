@@ -4,7 +4,6 @@ import pathlib
 import re
 
 import bpy
-import odio_urdf as urdf
 from bpy.props import BoolProperty, EnumProperty, StringProperty
 from bpy.types import Operator
 from bpy_extras.io_utils import ExportHelper
@@ -51,6 +50,12 @@ class URDFExporter(Operator, ExportHelper):
     )
 
     def execute(self, context):
+        try:
+            import odio.urdf as urdf
+        except ImportError:
+            self.report({'ERROR'}, 'The odio-urdf package is required. Install it with pip.')
+            return {'CANCELLED'}
+
         filepath = pathlib.Path(self.filepath)
         blend_file_path = pathlib.Path(bpy.data.filepath)
         package_path = filepath.parent
