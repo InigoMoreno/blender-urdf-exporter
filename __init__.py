@@ -50,11 +50,7 @@ class URDFExporter(Operator, ExportHelper):
     )
 
     def execute(self, context):
-        try:
-            import odio.urdf as urdf
-        except ImportError:
-            self.report({'ERROR'}, 'The odio-urdf package is required. Install it with pip.')
-            return {'CANCELLED'}
+        import urdf
 
         filepath = pathlib.Path(self.filepath)
         blend_file_path = pathlib.Path(bpy.data.filepath)
