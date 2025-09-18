@@ -13,7 +13,7 @@ bl_info = {
     "name": "URDF Exporter",
     "category": "Import-Export",
     "author": "Iñigo Moreno i Caireta",
-    "version": (1, 0, 2),
+    "version": (1, 0, 3),
     "blender": (3, 0, 1),
     "location": "File > Export > URDF",
     "description": "Exports a URDF file from the current Blender scene",
@@ -41,13 +41,13 @@ class URDFExporter(Operator, ExportHelper):
     xacro_setting: BoolProperty(
         name="Xacro Macro",
         description="Whether it should be a macro",
-        default=False,
+        default=True,
     )
 
     collision_setting: BoolProperty(
         name="Asume Collision Geometry will be added later",
         description="Wether to add assume that the collision geometry will be added later",
-        default=False,
+        default=True,
     )
 
     def execute(self, context):
