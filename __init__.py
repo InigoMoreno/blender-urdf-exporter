@@ -115,12 +115,11 @@ class URDFExporter(Operator, ExportHelper):
             parent = base_link
             if obj.parent is not None:
                 parent = obj.parent.name
-            origin = list(obj.matrix_local.to_translation()) + list(obj.matrix_local.to_euler())
             robot(urdf.Joint(
                 prefix + obj.name,
                 urdf.Parent(prefix + parent),
                 urdf.Child(prefix + obj.name),
-                urdf.Origin(origin),
+                urdf.Origin(xyz=list(obj.matrix_local.to_translation()), rpy=list(obj.matrix_local.to_euler())),
                 type='fixed',
             ))
 
